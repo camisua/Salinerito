@@ -26,7 +26,7 @@ def mesas(request):
     return render(request, 'pedidos/mesas.html', {'mesas': lista})
 
 
-@rol_requerido('MESERO', 'ADMINISTRADOR')
+@rol_requerido('MESERO', 'CAJERO', 'ADMINISTRADOR')
 def nuevo_pedido(request):
     """Tomar un pedido en tres pasos: mesa, platos y enviar (HU-11 a HU-13)."""
     categorias = Categoria.objects.prefetch_related('platos').order_by('nombre')
@@ -67,11 +67,12 @@ def nuevo_pedido(request):
             return render(request, 'pedidos/nuevo.html', {
                 'categorias': categorias, 'mesas': mesas_libres, 'datos': request.POST})
         messages.success(request, f'Pedido #{pedido.id} enviado a cocina ({pedido.destino}).')
-        return redirect('mis_pedidos')
+        # El cajero toma domicilios por teléfono: vuelve a su lista de domicilios
+        return redirect('domicilios' if request.user.rol == 'CAJERO' else 'mis_pedidos')
 
     return render(request, 'pedidos/nuevo.html', {
         'categorias': categorias, 'mesas': mesas_libres,
-        'datos': {'mesa': request.GET.get('mesa', '')},
+        'datos': {'mesa': request.GET.get('mesa', ''), 'tipo': request.GET.get('tipo', 'MESA')},
     })
 
 

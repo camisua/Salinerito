@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static humanize %}
+{% block titulo %}{{ factura.numero }}{% endblock %}
+
+{% block contenido %}
+<div class="d-flex gap-2 mb-3 no-imprimir">
+  <button onclick="window.print()" class="btn btn-salinero">Imprimir</button>
+  <a href="{% url 'por_cobrar' %}" class="btn btn-outline-secondary">Volver a por cobrar</a>
+</div>
+<div class="tarjeta p-4 factura" style="max-width:480px">
+  <div class="text-center mb-3">
+    <img src="{% static 'img/logo.png' %}" alt="El Salinero" style="height:80px;background:var(--sal-cafe);border-radius:8px;padding:4px">
+    <div class="fw-bold mt-2">Restaurante El Salinero</div>
+    <div class="small text-muted">Zipaquirá, Cundinamarca</div>
+  </div>
+  <div class="d-flex justify-content-between small"><span>Factura <strong>{{ factura.numero }}</strong></span><span>{{ factura.fecha|date:"d/m/Y H:i" }}</span></div>
+  <div class="small">Pedido #{{ factura.pedido.id }} · {{ factura.pedido.destino }}{% if factura.pedido.domicilio %} · {{ factura.pedido.domicilio.nombre_cliente }}{% endif %}</div>
+  <div class="small mb-2">Atendió: {{ factura.cajero.get_full_name|default:factura.cajero.username }}</div>
+  <table class="table table-sm">
+    {% for d in factura.pedido.detalles.all %}
+      <tr><td>{{ d.cantidad }} × {{ d.plato.nombre }}</td><td class="text-end">${{ d.subtotal|floatformat:0|intcomma }}</td></tr>
+    {% endfor %}
+  </table>
+  <div class="d-flex justify-content-between h5"><span>Total</span><span>${{ factura.total|floatformat:0|intcomma }}</span></div>
+  <div class="small">Pago: {{ factura.get_metodo_pago_display }}</div>
+  <p class="text-center small text-muted mt-3 mb-0">¡Gracias por su visita!</p>
+</div>
+{% endblock %}

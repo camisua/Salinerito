@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block titulo %}Cobrar pedido #{{ pedido.id }}{% endblock %}
+
+{% block contenido %}
+<h1 class="h3 mb-3">Factura · Pedido #{{ pedido.id }} · {{ pedido.destino }}</h1>
+<div class="row g-3">
+  <div class="col-lg-7">
+    <div class="tarjeta p-3">
+      <table class="table align-middle">
+        <thead><tr><th>Plato</th><th class="text-center">Cant.</th><th class="text-end">Precio</th><th class="text-end">Subtotal</th></tr></thead>
+        <tbody>
+        {% for d in pedido.detalles.all %}
+          <tr><td>{{ d.plato.nombre }}</td><td class="text-center">{{ d.cantidad }}</td>
+              <td class="text-end">${{ d.precio_unitario|floatformat:0|intcomma }}</td>
+              <td class="text-end">${{ d.subtotal|floatformat:0|intcomma }}</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      <div class="d-flex justify-content-between h4 mb-0"><span>Total</span><span>${{ pedido.calcular_total|floatformat:0|intcomma }}</span></div>
+    </div>
+  </div>
+  <div class="col-lg-5">
+    <form method="post" class="tarjeta p-3">
+      {% csrf_token %}
+      <h2 class="h5">Método de pago</h2>
+      <div class="d-grid gap-2 mb-3">
+        {% for valor, texto in metodos %}
+          <input type="radio" class="btn-check" name="metodo_pago" id="m-{{ valor }}" value="{{ valor }}" {% if forloop.first %}checked{% endif %}>
+          <label class="btn btn-outline-secondary" for="m-{{ valor }}">{{ texto }}</label>
+        {% endfor %}
+      </div>
+      <div id="bloque-efectivo">
+        <label class="form-label small fw-bold" for="recibido">Valor recibido</label>
+        <input type="number" id="recibido" class="form-control" min="0" placeholder="Ej: 50000">
+        <div class="small mt-1">Cambio: <strong id="cambio">$0</strong></div>
+      </div>
+      <button class="btn btn-salinero w-100 mt-3">Generar factura y cobrar</button>
+    </form>
+  </div>
+</div>
+<script>
+  // Calcula el cambio cuando pagan en efectivo (solo ayuda visual, no se guarda)
+  const TOTAL = {{ pedido.calcular_total|stringformat:'d' }};
+  const fmt = new Intl.NumberFormat('es-CO');
+  document.getElementById('recibido').addEventListener('input', function () {
+    const cambio = (parseInt(this.value) || 0) - TOTAL;
+    document.getElementById('cambio').textContent = cambio >= 0 ? '$' + fmt.format(cambio) : 'falta $' + fmt.format(-cambio);
+  });
+  document.querySelectorAll('input[name="metodo_pago"]').forEach(function (r) {
+    r.addEventListener('change', function () {
+      document.getElementById('bloque-efectivo').classList.toggle('d-none', this.value !== 'EFECTIVO');
+    });
+  });
+</script>
+{% endblock %}

@@ -13,6 +13,8 @@ MENU_POR_ROL = {
         ('Mesas', '/pedidos/mesas/'),
         ('Pedidos de hoy', '/pedidos/mis-pedidos/'),
         ('Cocina', '/pedidos/cocina/'),
+        ('Caja', '/caja/'),
+        ('Cierre de caja', '/caja/cierre/'),
         ('Reportes', '#'),
     ],
     'MESERO': [
@@ -27,14 +29,18 @@ MENU_POR_ROL = {
     ],
     'CAJERO': [
         ('Inicio', '/'),
-        ('Por cobrar', '#'),
-        ('Domicilios', '#'),
-        ('Cierre de caja', '#'),
+        ('Por cobrar', '/caja/'),
+        ('Domicilios', '/caja/domicilios/'),
+        ('Cierre de caja', '/caja/cierre/'),
     ],
 }
 
 
 def menu(request):
-    if request.user.is_authenticated:
-        return {'menu': MENU_POR_ROL.get(request.user.rol, [])}
-    return {'menu': []}
+    if not request.user.is_authenticated:
+        return {'menu': []}
+    opciones = MENU_POR_ROL.get(request.user.rol, [])
+    # La opción activa es la que más se parece a la dirección actual
+    coincidencias = [e for _, e in opciones if e != '#' and request.path.startswith(e)]
+    activa = max(coincidencias, key=len) if coincidencias else None
+    return {'menu': [(nombre, enlace, enlace == activa) for nombre, enlace in opciones]}

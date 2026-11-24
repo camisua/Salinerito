@@ -27,8 +27,8 @@
       <!-- Menú lateral: cambia según el rol (ver context_processors.py) -->
       <aside class="col-md-3 col-lg-2 menu-lateral p-3">
         <nav class="nav flex-column">
-          {% for nombre, enlace in menu %}
-            <a class="nav-link {% if request.path == enlace or enlace != '/' and enlace != '#' and enlace in request.path %}active{% endif %}" href="{{ enlace }}">{{ nombre }}</a>
+          {% for nombre, enlace, activa in menu %}
+            <a class="nav-link {% if activa %}active{% endif %}" href="{{ enlace }}">{{ nombre }}</a>
           {% endfor %}
         </nav>
       </aside>

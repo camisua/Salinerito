@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block titulo %}Cierre de caja{% endblock %}
+
+{% block contenido %}
+<h1 class="h3">Cierre de caja</h1>
+<p class="text-muted">Totales de las facturas que aún no se han cerrado.</p>
+
+<div class="row g-3 mb-3">
+  <div class="col-6 col-lg-3"><div class="tarjeta p-3"><div class="small text-muted text-uppercase">Efectivo</div><div class="h4 mb-0">${{ resumen.efectivo|floatformat:0|intcomma }}</div></div></div>
+  <div class="col-6 col-lg-3"><div class="tarjeta p-3"><div class="small text-muted text-uppercase">Tarjeta</div><div class="h4 mb-0">${{ resumen.tarjeta|floatformat:0|intcomma }}</div></div></div>
+  <div class="col-6 col-lg-3"><div class="tarjeta p-3"><div class="small text-muted text-uppercase">Transferencia</div><div class="h4 mb-0">${{ resumen.transferencia|floatformat:0|intcomma }}</div></div></div>
+  <div class="col-6 col-lg-3"><div class="tarjeta p-3" style="background:var(--sal-cafe-oscuro);color:#fff"><div class="small text-uppercase">Total · {{ resumen.cantidad }} facturas</div><div class="h4 mb-0">${{ resumen.total|floatformat:0|intcomma }}</div></div></div>
+</div>
+
+<form method="post" class="mb-4">
+  {% csrf_token %}
+  <button class="btn btn-salinero" {% if not resumen.cantidad %}disabled{% endif %}>Cerrar caja</button>
+</form>
+
+<h2 class="h5">Últimos cierres</h2>
+<div class="tarjeta p-3">
+  <table class="table table-sm mb-0">
+    <thead><tr><th>#</th><th>Fecha</th><th>Cajero</th><th class="text-end">Efectivo</th><th class="text-end">Tarjeta</th><th class="text-end">Transferencia</th><th class="text-end">Total</th><th class="text-end">Facturas</th></tr></thead>
+    <tbody>
+    {% for c in cierres %}
+      <tr><td>{{ c.id }}</td><td>{{ c.hora|date:"d/m/Y H:i" }}</td><td>{{ c.cajero.get_full_name|default:c.cajero.username }}</td>
+          <td class="text-end">${{ c.total_efectivo|floatformat:0|intcomma }}</td><td class="text-end">${{ c.total_tarjeta|floatformat:0|intcomma }}</td>
+          <td class="text-end">${{ c.total_transferencia|floatformat:0|intcomma }}</td><td class="text-end fw-bold">${{ c.total_general|floatformat:0|intcomma }}</td>
+          <td class="text-end">{{ c.numero_pedidos }}</td></tr>
+    {% empty %}
+      <tr><td colspan="8" class="text-muted">Aún no hay cierres.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

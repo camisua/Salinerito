@@ -44,3 +44,9 @@ body { background: var(--sal-fondo); color: var(--sal-texto); }
 .estado-listo { background: #2E7D4F; }
 .estado-entregado { background: #8C7B6E; }
 .estado-cancelado { background: #B03A2E; }
+
+/* Al imprimir la factura solo se ve la factura */
+@media print {
+  .barra, .menu-lateral, .no-imprimir, .alert { display: none !important; }
+  .factura { border: 0; }
+}

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "apps.inventario",
     "apps.carta",
     "apps.pedidos",
+    "apps.caja",
     "apps.api",
 ]
 
