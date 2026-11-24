@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    "apps.usuarios",
 ]
 
 MIDDLEWARE = [
@@ -133,3 +134,5 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+# Modelo de usuario propio de Salinerito (con rol)
+AUTH_USER_MODEL = "usuarios.Usuario"
