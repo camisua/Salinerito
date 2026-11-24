@@ -9,5 +9,6 @@ urlpatterns = [
         redirect_authenticated_user=True,
     ), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('mi-cuenta/', views.mi_cuenta, name='mi_cuenta'),
     path('', views.inicio, name='inicio'),
 ]

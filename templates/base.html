@@ -14,7 +14,7 @@
   <nav class="barra navbar px-3">
     <a href="{% url 'inicio' %}"><img src="{% static 'img/logo.png' %}" alt="El Salinero"></a>
     <div class="usuario d-flex align-items-center gap-3">
-      <span>{{ user.get_rol_display }} · <strong>{{ user.get_full_name|default:user.username }}</strong></span>
+      <a href="{% url 'mi_cuenta' %}" class="text-white text-decoration-none" title="Mi cuenta">{{ user.get_rol_display }} · <strong>{{ user.get_full_name|default:user.username }}</strong></a>
       <form method="post" action="{% url 'logout' %}" class="m-0">
         {% csrf_token %}
         <button class="btn btn-sm btn-light">Cerrar sesión</button>

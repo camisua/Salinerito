@@ -34,12 +34,7 @@ def nuevo_pedido(request):
 
     if request.method == 'POST':
         tipo = request.POST.get('tipo', 'MESA')
-        items = []
-        for categoria in categorias:
-            for plato in categoria.platos.all():
-                cantidad = request.POST.get(f'cantidad_{plato.id}', '0') or '0'
-                if cantidad.isdigit() and int(cantidad) > 0:
-                    items.append((plato, int(cantidad)))
+        items = _leer_items(request, categorias)
         mesa, domicilio = None, None
         if tipo == 'DOMICILIO':
             domicilio = {
@@ -73,6 +68,43 @@ def nuevo_pedido(request):
     return render(request, 'pedidos/nuevo.html', {
         'categorias': categorias, 'mesas': mesas_libres,
         'datos': {'mesa': request.GET.get('mesa', ''), 'tipo': request.GET.get('tipo', 'MESA')},
+    })
+
+
+def _leer_items(request, categorias):
+    """Lee del formulario las cantidades de cada plato (campos cantidad_<id>)."""
+    items = []
+    for categoria in categorias:
+        for plato in categoria.platos.all():
+            cantidad = request.POST.get(f'cantidad_{plato.id}', '0') or '0'
+            if cantidad.isdigit() and int(cantidad) > 0:
+                items.append((plato, int(cantidad)))
+    return items
+
+
+@rol_requerido('MESERO', 'CAJERO', 'ADMINISTRADOR')
+def editar_pedido(request, pk):
+    """Cambiar los platos de un pedido pendiente (HU-14)."""
+    pedido = get_object_or_404(Pedido, pk=pk)
+    if request.user.rol == 'MESERO' and pedido.mesero != request.user:
+        messages.error(request, 'Solo puedes editar tus propios pedidos.')
+        return redirect('mis_pedidos')
+    categorias = Categoria.objects.prefetch_related('platos').order_by('nombre')
+    if request.method == 'POST':
+        try:
+            servicios.editar_pedido(pedido, _leer_items(request, categorias),
+                                    request.POST.get('observaciones', '').strip())
+            messages.success(request, f'Pedido #{pedido.id} actualizado.')
+            return redirect('domicilios' if request.user.rol == 'CAJERO' else 'mis_pedidos')
+        except servicios.ErrorPedido as error:
+            messages.error(request, str(error))
+    # Marca en cada plato la cantidad que ya tiene el pedido
+    actuales = {d.plato_id: d.cantidad for d in pedido.detalles.all()}
+    for categoria in categorias:
+        for plato in categoria.platos.all():
+            plato.cant = actuales.get(plato.id, 0)
+    return render(request, 'pedidos/nuevo.html', {
+        'categorias': categorias, 'pedido': pedido, 'datos': {'observaciones': pedido.observaciones},
     })
 
 

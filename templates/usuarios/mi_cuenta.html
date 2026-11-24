@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block titulo %}Mi cuenta{% endblock %}
+
+{% block contenido %}
+<h1 class="h3 mb-3">Mi cuenta</h1>
+<div class="row g-3">
+  <div class="col-lg-6">
+    <form method="post" class="tarjeta p-4 h-100">
+      {% csrf_token %}
+      <h2 class="h6 text-uppercase text-muted">Mis datos</h2>
+      <p class="small text-muted">Usuario: <strong>{{ user.username }}</strong> · Rol: <strong>{{ user.get_rol_display }}</strong></p>
+      {% for campo in form_datos %}
+        <div class="mb-3"><label class="form-label small fw-bold" for="{{ campo.id_for_label }}">{{ campo.label|capfirst }}</label>{{ campo }}
+        {% for e in campo.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+      {% endfor %}
+      <button class="btn btn-salinero" name="guardar_datos">Guardar datos</button>
+    </form>
+  </div>
+  <div class="col-lg-6">
+    <form method="post" class="tarjeta p-4 h-100">
+      {% csrf_token %}
+      <h2 class="h6 text-uppercase text-muted">Cambiar contraseña</h2>
+      {% for campo in form_clave %}
+        <div class="mb-3"><label class="form-label small fw-bold" for="{{ campo.id_for_label }}">{{ campo.label }}</label>{{ campo }}
+        {% for e in campo.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+      {% endfor %}
+      <button class="btn btn-salinero" name="cambiar_clave">Cambiar contraseña</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

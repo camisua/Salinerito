@@ -43,6 +43,7 @@ def reportes(request):
         'total': sum(d['total'] for d in por_dia),
         'por_metodo': consultas.ventas_por_metodo(desde, hasta),
         'platos': consultas.platos_mas_vendidos(desde, hasta),
+        'meseros': consultas.ventas_por_mesero(desde, hasta),
         'tiempo_cocina': consultas.tiempo_promedio_cocina(desde, hasta),
         'num_facturas': consultas.facturas(desde, hasta).count(),
     })

@@ -32,6 +32,7 @@ document.querySelectorAll('.cantidad').forEach(function (c) { c.addEventListener
 
 // Mostrar mesas o datos del domicilio según el tipo elegido
 function mostrarTipo() {
+  if (!document.getElementById('tipo-domicilio')) return;  // al editar no hay tipo
   const esDomicilio = document.getElementById('tipo-domicilio').checked;
   document.getElementById('seccion-mesa').classList.toggle('d-none', esDomicilio);
   document.getElementById('seccion-domicilio').classList.toggle('d-none', !esDomicilio);

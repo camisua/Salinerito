@@ -8,7 +8,7 @@ from collections import OrderedDict
 from datetime import datetime, time, timedelta
 from decimal import Decimal
 
-from django.db.models import DecimalField, ExpressionWrapper, F, Sum
+from django.db.models import Count, DecimalField, ExpressionWrapper, F, Sum
 from django.utils import timezone
 
 from apps.caja.models import Factura, MetodoPago
@@ -89,3 +89,17 @@ def facturas(desde, hasta):
     inicio, fin = rango(desde, hasta)
     return Factura.objects.filter(fecha__gte=inicio, fecha__lt=fin) \
         .select_related('pedido__mesa', 'cajero').order_by('fecha')
+
+
+def ventas_por_mesero(desde, hasta):
+    """Pedidos cobrados y total vendido por cada mesero (HU-22)."""
+    inicio, fin = rango(desde, hasta)
+    filas = (Factura.objects.filter(fecha__gte=inicio, fecha__lt=fin)
+             .values('pedido__mesero__first_name', 'pedido__mesero__last_name', 'pedido__mesero__username')
+             .annotate(pedidos=Count('id'), vendido=Sum('total'))
+             .order_by('-vendido'))
+    return [{
+        'mesero': f"{f['pedido__mesero__first_name']} {f['pedido__mesero__last_name']}".strip()
+                  or f['pedido__mesero__username'],
+        'pedidos': f['pedidos'], 'vendido': f['vendido'],
+    } for f in filas]

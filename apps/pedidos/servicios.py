@@ -95,6 +95,24 @@ def crear_pedido(mesero, items, mesa=None, observaciones='', domicilio=None):
 
 
 @transaction.atomic
+def editar_pedido(pedido, items, observaciones=''):
+    """Cambia los platos de un pedido que la cocina aún no empieza (HU-14)."""
+    pedido = Pedido.objects.select_for_update().get(pk=pedido.pk)
+    if pedido.estado != Pedido.Estado.PENDIENTE:
+        raise ErrorPedido('Solo se puede editar un pedido pendiente: la cocina ya lo empezó.')
+    items = [(p, c) for p, c in items if c > 0]
+    if not items:
+        raise ErrorPedido('Agrega al menos un plato. Si el cliente ya no quiere nada, cancela el pedido.')
+    _verificar_existencias(items)
+    pedido.detalles.all().delete()
+    for plato, cantidad in items:
+        DetallePedido.objects.create(pedido=pedido, plato=plato, cantidad=cantidad, precio_unitario=plato.precio)
+    pedido.observaciones = observaciones
+    pedido.save(update_fields=['observaciones'])
+    return pedido
+
+
+@transaction.atomic
 def cambiar_estado(pedido, nuevo):
     """Mueve el pedido al siguiente estado y guarda la hora (HU-15 a HU-17)."""
     pedido = Pedido.objects.select_for_update().get(pk=pedido.pk)

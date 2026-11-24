@@ -24,6 +24,7 @@
             <form method="post" action="{% url 'estado_pedido' p.id %}" class="d-inline">{% csrf_token %}
               <input type="hidden" name="estado" value="ENTREGADO"><button class="btn btn-sm btn-salinero">Entregar</button></form>
           {% elif p.estado == 'PENDIENTE' %}
+            <a href="{% url 'editar_pedido' p.id %}" class="btn btn-sm btn-outline-secondary">Editar</a>
             <form method="post" action="{% url 'estado_pedido' p.id %}" class="d-inline">{% csrf_token %}
               <input type="hidden" name="estado" value="CANCELADO"><button class="btn btn-sm btn-outline-danger">Cancelar</button></form>
           {% endif %}

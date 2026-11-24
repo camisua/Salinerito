@@ -52,6 +52,17 @@
         {% endfor %}
         </tbody>
       </table>
+      <h2 class="h6 text-uppercase text-muted mt-4">Pedidos por mesero</h2>
+      <table class="table table-sm mb-0">
+        <thead><tr><th>Mesero</th><th class="text-end">Pedidos</th><th class="text-end">Vendido</th></tr></thead>
+        <tbody>
+        {% for m in meseros %}
+          <tr><td>{{ m.mesero }}</td><td class="text-end">{{ m.pedidos }}</td><td class="text-end">${{ m.vendido|floatformat:0|intcomma }}</td></tr>
+        {% empty %}
+          <tr><td colspan="3" class="text-muted">Sin ventas en este rango.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
     </div>
   </div>
 </div>

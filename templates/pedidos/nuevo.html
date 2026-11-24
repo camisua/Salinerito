@@ -1,16 +1,22 @@
 {% extends 'base.html' %}
 {% load static humanize %}
-{% block titulo %}Nuevo pedido{% endblock %}
+{% block titulo %}{% if pedido %}Editar pedido{% else %}Nuevo pedido{% endif %}{% endblock %}
 
 {% block contenido %}
+{% if pedido %}
+<h1 class="h3 mb-0">Editar pedido #{{ pedido.id }} · {{ pedido.destino }}</h1>
+<p class="text-muted">Cambia las cantidades y guarda. Solo se puede mientras la cocina no lo haya empezado.</p>
+{% else %}
 <h1 class="h3 mb-0">Nuevo pedido</h1>
 <p class="text-muted">1. Elige la mesa · 2. Agrega los platos · 3. Envía a cocina</p>
+{% endif %}
 
 <form method="post" id="form-pedido">
   {% csrf_token %}
   <div class="row g-3">
     <div class="col-lg-8">
-      <!-- Paso 1: mesa o domicilio -->
+      <!-- Paso 1: mesa o domicilio (no aparece al editar) -->
+      {% if not pedido %}
       <div class="tarjeta p-3 mb-3">
         <div class="d-flex gap-3 mb-2">
           <div class="form-check"><input class="form-check-input" type="radio" name="tipo" id="tipo-mesa" value="MESA" {% if datos.tipo != 'DOMICILIO' %}checked{% endif %}><label class="form-check-label fw-bold" for="tipo-mesa">Mesa</label></div>
@@ -30,6 +36,7 @@
           <div class="col-md-3"><input class="form-control" name="telefono" placeholder="Teléfono" value="{{ datos.telefono|default:'' }}"></div>
         </div>
       </div>
+      {% endif %}
 
       <!-- Paso 2: platos -->
       <div class="tarjeta p-3">
@@ -41,7 +48,7 @@
               <div class="d-flex align-items-center gap-1">
                 <button type="button" class="btn btn-sm btn-outline-secondary" data-menos="{{ p.id }}">−</button>
                 <input type="number" min="0" class="form-control form-control-sm text-center cantidad" style="width:64px"
-                       name="cantidad_{{ p.id }}" id="cantidad_{{ p.id }}" data-nombre="{{ p.nombre }}" data-precio="{{ p.precio|stringformat:'d' }}" value="0">
+                       name="cantidad_{{ p.id }}" id="cantidad_{{ p.id }}" data-nombre="{{ p.nombre }}" data-precio="{{ p.precio|stringformat:'d' }}" value="{{ p.cant|default:0 }}">
                 <button type="button" class="btn btn-sm btn-outline-secondary" data-mas="{{ p.id }}">+</button>
               </div>
             </div>
@@ -58,7 +65,7 @@
         <label class="form-label small fw-bold">Observaciones</label>
         <input class="form-control mb-3" name="observaciones" placeholder="Ej: bandeja sin chicharrón" value="{{ datos.observaciones|default:'' }}">
         <div class="d-flex justify-content-between h5"><span>Total</span><span id="total">$0</span></div>
-        <button class="btn btn-salinero w-100 mt-2">Enviar a cocina</button>
+        <button class="btn btn-salinero w-100 mt-2">{% if pedido %}Guardar cambios{% else %}Enviar a cocina{% endif %}</button>
       </div>
     </div>
   </div>
