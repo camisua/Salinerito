@@ -50,3 +50,6 @@ body { background: var(--sal-fondo); color: var(--sal-texto); }
   .barra, .menu-lateral, .no-imprimir, .alert { display: none !important; }
   .factura { border: 0; }
 }
+
+/* Barras del reporte de ventas por día */
+.barra-venta { background: var(--sal-cafe); height: 14px; min-width: 2px; }

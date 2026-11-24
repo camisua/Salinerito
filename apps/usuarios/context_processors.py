@@ -6,7 +6,7 @@ Así el menú se arma en un solo lugar y base.html lo muestra en cada página.
 
 MENU_POR_ROL = {
     'ADMINISTRADOR': [
-        ('Inicio', '/'),
+        ('Panel', '/reportes/panel/'),
         ('Usuarios', '/admin/usuarios/usuario/'),
         ('Carta', '/carta/'),
         ('Insumos', '/inventario/'),
@@ -15,7 +15,7 @@ MENU_POR_ROL = {
         ('Cocina', '/pedidos/cocina/'),
         ('Caja', '/caja/'),
         ('Cierre de caja', '/caja/cierre/'),
-        ('Reportes', '#'),
+        ('Reportes', '/reportes/'),
     ],
     'MESERO': [
         ('Inicio', '/'),

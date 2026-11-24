@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block titulo %}Reportes{% endblock %}
+
+{% block contenido %}
+<div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
+  <div>
+    <h1 class="h3 mb-0">Reportes de ventas</h1>
+    <p class="text-muted mb-0">Del {{ desde|date:"d/m/Y" }} al {{ hasta|date:"d/m/Y" }}</p>
+  </div>
+  <form class="d-flex flex-wrap gap-2 align-items-end" method="get">
+    <div><label class="form-label small fw-bold mb-0">Desde</label><input type="date" name="desde" value="{{ desde|date:'Y-m-d' }}" class="form-control form-control-sm"></div>
+    <div><label class="form-label small fw-bold mb-0">Hasta</label><input type="date" name="hasta" value="{{ hasta|date:'Y-m-d' }}" class="form-control form-control-sm"></div>
+    <button class="btn btn-sm btn-salinero">Ver</button>
+    <a class="btn btn-sm btn-outline-secondary" href="{% url 'reportes_csv' %}?desde={{ desde|date:'Y-m-d' }}&hasta={{ hasta|date:'Y-m-d' }}">Descargar Excel (CSV)</a>
+  </form>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-md-4"><div class="tarjeta p-3"><div class="small text-muted text-uppercase">Total vendido</div><div class="h3 mb-0">${{ total|floatformat:0|intcomma }}</div><div class="small text-muted">{{ num_facturas }} facturas</div></div></div>
+  <div class="col-md-4"><div class="tarjeta p-3"><div class="small text-muted text-uppercase">Ticket promedio</div><div class="h3 mb-0">{% if num_facturas %}${% widthratio total num_facturas 1 as prom %}{{ prom|intcomma }}{% else %}$0{% endif %}</div></div></div>
+  <div class="col-md-4"><div class="tarjeta p-3"><div class="small text-muted text-uppercase">Tiempo promedio de cocina</div><div class="h3 mb-0">{% if tiempo_cocina is not None %}{{ tiempo_cocina }} min{% else %}—{% endif %}</div></div></div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-7">
+    <div class="tarjeta p-3 h-100">
+      <h2 class="h6 text-uppercase text-muted">Ventas por día</h2>
+      {% for d in por_dia %}
+        <div class="d-flex align-items-center gap-2 mb-1 small">
+          <span style="width:70px">{{ d.dia|date:"D d/m" }}</span>
+          <div class="flex-grow-1 bg-light rounded"><div class="barra-venta rounded" style="width: {{ d.porcentaje }}%"></div></div>
+          <span class="text-end" style="width:90px">${{ d.total|floatformat:0|intcomma }}</span>
+        </div>
+      {% endfor %}
+      <h2 class="h6 text-uppercase text-muted mt-4">Por método de pago</h2>
+      <table class="table table-sm mb-0">
+        {% for m in por_metodo %}<tr><td>{{ m.metodo }}</td><td class="text-end">${{ m.total|floatformat:0|intcomma }}</td></tr>{% endfor %}
+      </table>
+    </div>
+  </div>
+  <div class="col-lg-5">
+    <div class="tarjeta p-3 h-100">
+      <h2 class="h6 text-uppercase text-muted">Platos más vendidos</h2>
+      <table class="table table-sm mb-0">
+        <thead><tr><th>Plato</th><th class="text-end">Cant.</th><th class="text-end">Vendido</th></tr></thead>
+        <tbody>
+        {% for p in platos %}
+          <tr><td>{{ p.plato__nombre }}</td><td class="text-end">{{ p.cantidad_total }}</td><td class="text-end">${{ p.vendido|floatformat:0|intcomma }}</td></tr>
+        {% empty %}
+          <tr><td colspan="3" class="text-muted">Sin ventas en este rango.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
