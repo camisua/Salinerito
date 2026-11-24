@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block titulo %}Insumos{% endblock %}
+
+{% block contenido %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h1 class="h3 mb-0">Insumos e inventario</h1>
+    <p class="text-muted mb-0">Existencias, cantidad mínima y registro de compras.</p>
+  </div>
+  <a href="{% url 'nuevo_insumo' %}" class="btn btn-salinero">+ Nuevo insumo</a>
+</div>
+
+{% if alertas %}
+<div class="alert alert-warning py-2">
+  <strong>Stock mínimo:</strong>
+  {% for i in alertas %}{{ i.nombre }} ({{ i.existencia|floatformat:"-3" }} {{ i.unidad }}){% if not forloop.last %} · {% endif %}{% endfor %}
+</div>
+{% endif %}
+
+<div class="row g-3">
+  <div class="col-lg-8">
+    <div class="tarjeta p-3">
+      <table class="table align-middle mb-0">
+        <thead><tr><th>Insumo</th><th>Unidad</th><th class="text-end">Existencia</th><th class="text-end">Mínimo</th><th>Estado</th><th></th></tr></thead>
+        <tbody>
+        {% for i in insumos %}
+          <tr>
+            <td class="fw-bold">{{ i.nombre }}</td>
+            <td>{{ i.unidad }}</td>
+            <td class="text-end">{{ i.existencia|floatformat:"-3" }}</td>
+            <td class="text-end">{{ i.cantidad_minima|floatformat:"-3" }}</td>
+            <td>{% if i.bajo_minimo %}<span class="badge bg-danger">Comprar</span>{% else %}<span class="badge bg-success">OK</span>{% endif %}</td>
+            <td class="text-end"><a href="{% url 'editar_insumo' i.id %}" class="btn btn-sm btn-outline-secondary">Editar</a></td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="tarjeta p-4 mb-3">
+      <h2 class="h6 text-uppercase text-muted">Registrar compra</h2>
+      <form method="post">
+        {% csrf_token %}
+        {% for campo in form_compra %}
+          <div class="mb-2">
+            <label class="form-label small fw-bold" for="{{ campo.id_for_label }}">{{ campo.label }}</label>
+            {{ campo }}
+            {% for e in campo.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+          </div>
+        {% endfor %}
+        <button class="btn btn-salinero w-100 mt-2">Registrar compra</button>
+      </form>
+    </div>
+
+    <div class="tarjeta p-4">
+      <h2 class="h6 text-uppercase text-muted">Últimas compras</h2>
+      <ul class="list-unstyled small mb-0">
+        {% for c in ultimas_compras %}
+          <li class="mb-1">{{ c.fecha|date:"d/m" }} · {{ c.insumo.nombre }} · {{ c.cantidad|floatformat:"-3" }} {{ c.insumo.unidad }} · ${{ c.costo|floatformat:0|intcomma }}</li>
+        {% empty %}
+          <li class="text-muted">Aún no hay compras.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

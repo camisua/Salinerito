@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block titulo %}Carta{% endblock %}
+
+{% block contenido %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h1 class="h3 mb-0">Gestión de la carta</h1>
+    <p class="text-muted mb-0">Platos con su precio y la receta que descuenta el inventario.</p>
+  </div>
+  <a href="{% url 'nuevo_plato' %}" class="btn btn-salinero">+ Nuevo plato</a>
+</div>
+
+<!-- Filtro por categoría -->
+<div class="mb-3 d-flex flex-wrap gap-2">
+  <a href="{% url 'lista_platos' %}" class="btn btn-sm {% if not categoria_id %}btn-salinero{% else %}btn-outline-secondary{% endif %}">Todas</a>
+  {% for c in categorias %}
+    <a href="?categoria={{ c.id }}" class="btn btn-sm {% if categoria_id == c.id|stringformat:'s' %}btn-salinero{% else %}btn-outline-secondary{% endif %}">{{ c.nombre }}</a>
+  {% endfor %}
+</div>
+
+<div class="tarjeta p-3">
+  <table class="table align-middle mb-0">
+    <thead><tr><th>Plato</th><th>Categoría</th><th>Receta</th><th class="text-end">Precio</th><th>Estado</th><th></th></tr></thead>
+    <tbody>
+    {% for p in platos %}
+      <tr class="{% if not p.activo %}text-muted{% endif %}">
+        <td class="fw-bold">{{ p.nombre }}</td>
+        <td>{{ p.categoria }}</td>
+        <td class="small">{% for r in p.recetas.all %}{{ r.insumo.nombre }}{% if not forloop.last %}, {% endif %}{% empty %}<span class="text-danger">Sin receta</span>{% endfor %}</td>
+        <td class="text-end">${{ p.precio|floatformat:0|intcomma }}</td>
+        <td>
+          {% if p.activo %}<span class="badge bg-success">Activo</span>{% else %}<span class="badge bg-secondary">Inactivo</span>{% endif %}
+        </td>
+        <td class="text-end text-nowrap">
+          <a href="{% url 'editar_plato' p.id %}" class="btn btn-sm btn-outline-secondary">Editar</a>
+          <form method="post" action="{% url 'estado_plato' p.id %}" class="d-inline">
+            {% csrf_token %}
+            <button class="btn btn-sm btn-outline-secondary">{% if p.activo %}Desactivar{% else %}Activar{% endif %}</button>
+          </form>
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="6" class="text-muted">No hay platos en esta categoría.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

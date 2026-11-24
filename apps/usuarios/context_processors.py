@@ -8,8 +8,8 @@ MENU_POR_ROL = {
     'ADMINISTRADOR': [
         ('Inicio', '/'),
         ('Usuarios', '/admin/usuarios/usuario/'),
-        ('Carta', '/admin/carta/plato/'),
-        ('Insumos', '/admin/inventario/insumo/'),
+        ('Carta', '/carta/'),
+        ('Insumos', '/inventario/'),
         ('Mesas', '#'),
         ('Reportes', '#'),
     ],

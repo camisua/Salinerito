@@ -28,13 +28,17 @@
       <aside class="col-md-3 col-lg-2 menu-lateral p-3">
         <nav class="nav flex-column">
           {% for nombre, enlace in menu %}
-            <a class="nav-link {% if request.path == enlace %}active{% endif %}" href="{{ enlace }}">{{ nombre }}</a>
+            <a class="nav-link {% if request.path == enlace or enlace != '/' and enlace != '#' and enlace in request.path %}active{% endif %}" href="{{ enlace }}">{{ nombre }}</a>
           {% endfor %}
         </nav>
       </aside>
 
       <!-- Contenido de cada página -->
       <main class="col-md-9 col-lg-10 p-4">
+        <!-- Mensajes de confirmación (por ejemplo: "Plato guardado") -->
+        {% for mensaje in messages %}
+          <div class="alert alert-{% if mensaje.tags == 'error' %}danger{% else %}{{ mensaje.tags }}{% endif %} py-2">{{ mensaje }}</div>
+        {% endfor %}
         {% block contenido %}{% endblock %}
       </main>
     </div>

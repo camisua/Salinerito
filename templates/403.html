@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block titulo %}Acceso denegado{% endblock %}
+{% block contenido %}
+<div class="tarjeta p-5 text-center">
+  <h1 class="h3">Acceso denegado</h1>
+  <p class="text-muted">Tu rol no tiene permiso para entrar a esta sección.</p>
+  <a href="{% url 'inicio' %}" class="btn btn-salinero">Volver al inicio</a>
+</div>
+{% endblock %}
