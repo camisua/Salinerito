@@ -57,13 +57,14 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        "DIRS": [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                "apps.usuarios.context_processors.menu",
             ],
         },
     },
@@ -136,3 +137,10 @@ MAILERS = {
 }
 # Modelo de usuario propio de Salinerito (con rol)
 AUTH_USER_MODEL = "usuarios.Usuario"
+
+STATICFILES_DIRS = [BASE_DIR / "static"]
+
+# Inicio y cierre de sesión
+LOGIN_URL = "login"
+LOGIN_REDIRECT_URL = "inicio"
+LOGOUT_REDIRECT_URL = "login"

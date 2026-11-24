@@ -1,0 +1,35 @@
+/* Colores de la marca El Salinero */
+:root {
+  --sal-cafe: #A3643F;
+  --sal-cafe-oscuro: #7B4A29;
+  --sal-amarillo: #F1C23B;
+  --sal-texto: #422402;
+  --sal-fondo: #FBF5EC;
+  --sal-borde: #EADBC6;
+}
+
+body { background: var(--sal-fondo); color: var(--sal-texto); }
+
+/* Barra superior */
+.barra { background: var(--sal-cafe); border-bottom: 4px solid var(--sal-amarillo); }
+.barra img { height: 56px; }
+.barra .usuario { color: #fff; font-size: .9rem; }
+
+/* Botones con el café de la marca */
+.btn-salinero { background: var(--sal-cafe-oscuro); border-color: var(--sal-cafe-oscuro); color: #fff; }
+.btn-salinero:hover { background: var(--sal-texto); border-color: var(--sal-texto); color: #fff; }
+
+/* Menú lateral */
+.menu-lateral { background: #fff; border-right: 1px solid var(--sal-borde); min-height: calc(100vh - 64px); }
+.menu-lateral .nav-link { color: var(--sal-texto); border-radius: 8px; margin-bottom: 4px; }
+.menu-lateral .nav-link:hover { background: var(--sal-fondo); }
+.menu-lateral .nav-link.active { background: var(--sal-cafe-oscuro); color: #fff; }
+
+/* Tarjetas */
+.tarjeta { background: #fff; border: 1px solid var(--sal-borde); border-radius: 12px; }
+
+/* Pantalla de inicio de sesión */
+.login-fondo { min-height: 100vh; background: linear-gradient(var(--sal-cafe) 0 40%, var(--sal-fondo) 40%); }
+.login-caja { max-width: 400px; border: 0; border-radius: 14px; overflow: hidden; }
+.login-caja .encabezado { background: var(--sal-cafe); border-bottom: 4px solid var(--sal-amarillo); }
+.login-caja .encabezado img { height: 110px; }

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block titulo %}Inicio{% endblock %}
+
+{% block contenido %}
+<h1 class="h3">Hola, {{ user.first_name|default:user.username }}</h1>
+<p class="text-muted">Estas son las opciones de tu rol: <strong>{{ user.get_rol_display }}</strong>.</p>
+
+<div class="row g-3 mt-2">
+  {% for nombre, enlace in menu %}
+    {% if nombre != 'Inicio' %}
+    <div class="col-sm-6 col-lg-4">
+      <a href="{{ enlace }}" class="text-decoration-none text-reset">
+        <div class="tarjeta p-4 h-100">
+          <div class="fw-bold">{{ nombre }}</div>
+          <div class="small text-muted">{% if enlace == '#' %}Próximamente{% else %}Abrir{% endif %}</div>
+        </div>
+      </a>
+    </div>
+    {% endif %}
+  {% endfor %}
+</div>
+{% endblock %}
