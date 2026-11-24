@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block titulo %}Cocina{% endblock %}
+
+{% block contenido %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3 mb-0">Pedidos de cocina</h1>
+  <span class="small text-muted">Se actualiza cada 10 segundos · <span id="hora"></span></span>
+</div>
+<div class="row g-3">
+  <div class="col-md-4"><h2 class="h6 text-uppercase">Pendientes <span class="badge estado-pendiente" id="n-PENDIENTE">0</span></h2><div id="col-PENDIENTE"></div></div>
+  <div class="col-md-4"><h2 class="h6 text-uppercase">En preparación <span class="badge estado-en_preparacion" id="n-EN_PREPARACION">0</span></h2><div id="col-EN_PREPARACION"></div></div>
+  <div class="col-md-4"><h2 class="h6 text-uppercase">Listos <span class="badge estado-listo" id="n-LISTO">0</span></h2><div id="col-LISTO"></div></div>
+</div>
+<script>const CSRF_TOKEN = '{{ csrf_token }}';</script>
+<script src="{% static 'js/cocina.js' %}"></script>
+{% endblock %}

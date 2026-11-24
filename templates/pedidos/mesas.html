@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block titulo %}Mesas{% endblock %}
+
+{% block contenido %}
+<h1 class="h3">Mesas del salón</h1>
+<p class="text-muted">Toca una mesa libre para tomar el pedido.</p>
+
+<div class="row g-3">
+  {% for m in mesas %}
+    <div class="col-6 col-md-4 col-lg-3">
+      {% if m.estado == 'LIBRE' %}
+        <a href="{% url 'nuevo_pedido' %}?mesa={{ m.id }}" class="text-decoration-none">
+          <div class="tarjeta p-4 text-center mesa-libre">
+            <div class="h4 mb-0">{{ m.numero }}</div>
+            <div class="small text-success fw-bold">Libre · {{ m.capacidad }} puestos</div>
+          </div>
+        </a>
+      {% else %}
+        <div class="tarjeta p-4 text-center mesa-ocupada">
+          <div class="h4 mb-0">{{ m.numero }}</div>
+          <div class="small fw-bold">Ocupada</div>
+          {% if m.pedido_activo %}<div class="small">Pedido #{{ m.pedido_activo.id }} · {{ m.pedido_activo.get_estado_display }}</div>{% endif %}
+        </div>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

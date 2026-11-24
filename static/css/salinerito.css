@@ -33,3 +33,14 @@ body { background: var(--sal-fondo); color: var(--sal-texto); }
 .login-caja { max-width: 400px; border: 0; border-radius: 14px; overflow: hidden; }
 .login-caja .encabezado { background: var(--sal-cafe); border-bottom: 4px solid var(--sal-amarillo); }
 .login-caja .encabezado img { height: 110px; }
+
+/* Mesas */
+.mesa-libre { border: 2px solid #2E7D4F; color: #2E7D4F; }
+.mesa-ocupada { background: var(--sal-cafe-oscuro); color: #fff; border: 0; }
+
+/* Colores de los estados del pedido */
+.estado-pendiente { background: #C27C0E; }
+.estado-en_preparacion { background: #2563A8; }
+.estado-listo { background: #2E7D4F; }
+.estado-entregado { background: #8C7B6E; }
+.estado-cancelado { background: #B03A2E; }

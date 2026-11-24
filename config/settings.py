@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     "apps.usuarios",
     "apps.inventario",
     "apps.carta",
+    "apps.pedidos",
+    "apps.api",
 ]
 
 MIDDLEWARE = [
@@ -147,3 +149,9 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "inicio"
 LOGOUT_REDIRECT_URL = "login"
+
+# API (Django REST Framework): usa la misma sesión del sistema
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": ["rest_framework.authentication.SessionAuthentication"],
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
+}
