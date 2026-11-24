@@ -17,6 +17,12 @@ Sistema web para el restaurante El Salinero (Zipaquirá): pedidos de mesa y domi
 4. `python manage.py migrate`
 5. `python manage.py runserver`
 
+## Estructura
+
+- **Backend:** `config/` (configuración y URLs), `apps/` (usuarios, carta, inventario, pedidos, caja) y `api/` (Django REST Framework).
+- **Frontend:** `templates/` (páginas HTML) y `static/` (CSS, JavaScript e imágenes).
+- **Documentación:** `docs/`
+
 ## Autor
 
 Edison Camilo Suárez Rodríguez · Tecnología en Análisis y Desarrollo de Software · SENA
